@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="ko"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;미래실험실: 혜화동 도시 생태계 원형 포함 지도&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://d3js.org/d3.v7.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body { margin: 0; display: flex; justify-content: center; background-color: #f8f9fa; font-family: 'Pretendard', sans-serif; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>svg { max-width: 100%; height: auto; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.node { cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.node:hover { stroke: #000; stroke-width: 1.5px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.label { font-size: 10px; text-anchor: middle; fill: #333; font-weight: 600; pointer-events: none; text-shadow: 0 1px 3px rgba(255,255,255,0.8); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div id="chart"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// 1. 혜화동 레이어 데이터 구조화 (JSON 트리)</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// 사용자가 제공한 &lt;Final map structure&gt; 데이터를 기반으로 구축했습니다.</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const data = {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>name: "혜화동",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{</p>
+<p class="p1"><span class="Apple-converted-space">        </span>name: "LAYER 1B — INFRASTRUCTURE",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>name: "Medical",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "SNU Hospital (Main)", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "SNU Dental Hospital", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "SNU Hospital Annex", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "SNU Cancer Hospital", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Local Clinic - Internal Medicine", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Local Clinic - Dermatology", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Local Clinic - Orthopedics", value: 1 }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>]</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>name: "Education",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Sungkyunkwan University", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Hongik Univ Daehak-ro Campus", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "KNOU Headquarters", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "SNU Attached Elementary", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "SNU Attached Middle School", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "SNU Attached Girls Middle", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Seoul Hyoje Elementary", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Catholic Univ (nearby)", value: 1 }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>]</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>name: "Life Service",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{</p>
+<p class="p1"><span class="Apple-converted-space">                </span>name: "Public Institution (Admin)",</p>
+<p class="p1"><span class="Apple-converted-space">                </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Jongno-gu Office", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Hyehwa-dong Community Center", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Jongno Police Station", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Hyehwa Fire Station", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Jongno Post Office (Hyehwa)", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Hyehwa Post Office", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "National Election Commission", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Military Manpower Admin", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Naksan Park", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Marronnier Park", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Marronnier Park Outdoor Stage", value: 1 }</p>
+<p class="p1"><span class="Apple-converted-space">                </span>]</p>
+<p class="p1"><span class="Apple-converted-space">              </span>},</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{</p>
+<p class="p1"><span class="Apple-converted-space">                </span>name: "Daily Convenience Facility",</p>
+<p class="p1"><span class="Apple-converted-space">                </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "KB Bank ATM", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Shinhan Bank", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "iPhone Fix", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Youth Phone", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Optician cluster", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Hair salon cluster", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Dermatology cluster", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Dental clinic", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Print shop", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Coin laundry", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Cafe24 Business Center", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Tutoring academies", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Real estate cluster", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Goshiwon cluster", value: 1 }</p>
+<p class="p1"><span class="Apple-converted-space">                </span>]</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>]</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>name: "Transport",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Roads", children: [{name: "Daehak-ro", value: 1}, {name: "Dongsung-gil", value: 1}, {name: "Changgyeonggung-ro", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Parking", children: [{name: "Marronnier Parking", value: 1}, {name: "SNU Hospital Parking", value: 1}, {name: "Public Parking Lot", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{</p>
+<p class="p1"><span class="Apple-converted-space">                </span>name: "Traffic",</p>
+<p class="p1"><span class="Apple-converted-space">                </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Subway", children: [{name: "Hyehwa Station (Line 4)", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Bus", children: [</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{ name: "Blue Bus (100, 101, ...)", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{ name: "Green Bus (2112, ...)", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{ name: "Local Village Bus (Jongno 07, ...)", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{ name: "Bus station: Exit 4", value: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{ name: "Bus station: Exit 1", value: 1 }</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>]<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>]</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>]</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>name: "Utility Infrastructure",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Energy", children: [{name: "KEPCO substation", value: 1}, {name: "Gas regulator", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Water", children: [{name: "Water main", value: 1}, {name: "Sewage line", value: 1}, {name: "Treatment Plant (external)", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Waste", children: [{name: "Waste collection route", value: 1}, {name: "Mapo Resource Recovery (external)", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Telecommunications", value: 1 }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>]</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{</p>
+<p class="p1"><span class="Apple-converted-space">        </span>name: "LAYER 2 — INDUSTRY",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>name: "Art-Performance",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Production companies", children: [{name: "OD Musical Company", value: 1}, {name: "CJ ENM Musical Division", value: 1}, {name: "Shownote", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Platform", children: [{name: "NOL Ticket", value: 1}, {name: "YES 24 ticket", value: 1}, {name: "The Musical Magazine", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>name: "Theater",</p>
+<p class="p1"><span class="Apple-converted-space">                </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Large Theater", children: [{name: "Arko Arts Theater", value: 1}, {name: "Hongik Univ Art Center", value: 1}, {name: "Dongsung Art Center", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{ name: "Small theater", children: [{name: "TOM Theater", value: 1}, {name: "Link Arts Center", value: 1}, {name: "소극장 혜화당", value: 1}] }</p>
+<p class="p1"><span class="Apple-converted-space">                </span>]</p>
+<p class="p1"><span class="Apple-converted-space">              </span>},</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Practice space", children: [{name: "Studio Ilsangjeok", value: 1}, {name: "Yejon Acting Academy", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Physical &amp; Tech Support", children: [{name: "Rental On", value: 1}, {name: "Costume Kookhyang", value: 1}, {name: "Korean Theater Association", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Transportation", children: [{name: "Set warehouse", value: 1}, {name: "Re:Stage Seoul", value: 1}] }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>]</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>name: "Mutualistic Commerce",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>children: [</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Eatery", children: [{name: "Restaurant &amp; Bar (Jungdon, ...)", value: 1}, {name: "Cafe (Hakrim Dabang, ...)", value: 1}, {name: "Street Food", value: 1}, {name: "Convenient store", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Exhibition", children: [{name: "Gallery (ARKO Art Center, ...)", value: 1}, {name: "Public Art", value: 1}, {name: "Art supply stores", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Shopping", children: [{name: "Merchandise booth", value: 1}, {name: "Brand Store (Innisfree, Daiso)", value: 1}, {name: "Independent Store (Mapi&amp;nd, ...)", value: 1}] },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{ name: "Heritage", children: [{name: "Changgyeonggung Palace", value: 1}, {name: "Seoul Fortress Wall", value: 1}, {name: "Ihwa Mural Village", value: 1}] }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>]</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>]</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// 2. 화면 및 D3 설정</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const width = 800;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const height = width;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const color = d3.scaleLinear().domain([0, 5]).range(["hsl(210, 30%, 95%)", "hsl(210, 30%, 75%)"]).interpolate(d3.interpolateHcl);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const pack = data =&gt; d3.pack().size([width, height]).padding(3)(d3.hierarchy(data).sum(d =&gt; d.value).sort((a, b) =&gt; b.value - a.value));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const root = pack(data);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>let focus = root;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>let view;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const svg = d3.select("#chart").append("svg")</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.attr("viewBox", `-${width / 2} -${height / 2} ${width} ${height}`)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.style("display", "block").style("background", "transparent")</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.on("click", (event) =&gt; zoom(event, root));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// 3. 원 그리기</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const node = svg.append("g").selectAll("circle").data(root.descendants().slice(1)).join("circle")</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.attr("fill", d =&gt; d.children ? color(d.depth) : "white")</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.attr("pointer-events", d =&gt; !d.children ? "none" : null)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.attr("class", "node")</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.on("mouseover", function() { d3.select(this).attr("stroke", "#000"); })</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.on("mouseout", function() { d3.select(this).attr("stroke", null); })</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.on("click", (event, d) =&gt; focus !== d &amp;&amp; (zoom(event, d), event.stopPropagation()));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// 4. 라벨(글씨) 그리기</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const label = svg.append("g").style("font", "10px sans-serif").style("font-weight", "600").attr("pointer-events", "none").attr("text-anchor", "middle")</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.selectAll("text").data(root.descendants()).join("text")</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.style("fill-opacity", d =&gt; d.parent === root ? 1 : 0)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.style("display", d =&gt; d.parent === root ? "inline" : "none")</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.text(d =&gt; d.data.name);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// 5. 줌 액션 설정</p>
+<p class="p1"><span class="Apple-converted-space">  </span>zoomTo([root.x, root.y, root.r * 2]);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function zoomTo(v) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const k = width / v[2];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>view = v;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>label.attr("transform", d =&gt; `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>node.attr("transform", d =&gt; `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`).attr("r", d =&gt; d.r * k);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function zoom(event, d) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>focus = d;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const transition = svg.transition().duration(750).tween("zoom", d =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return t =&gt; zoomTo(i(t));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>label.filter(function(d) { return d.parent === focus || this.style.display === "inline"; })</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.transition(transition)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.style("fill-opacity", d =&gt; d.parent === focus ? 1 : 0)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
